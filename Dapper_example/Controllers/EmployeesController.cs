@@ -57,7 +57,25 @@ namespace Dapper_example.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(EmployeeModel model)
         {
-            return NoContent();
+            var employee = new EmployeeEntite(model.Fullname, model.Birthdate, model.Salary, model.Position);
+
+            var parameters = new
+            {
+                employee.Fullname,
+                employee.Birthdate,
+                employee.Salary,
+                employee.Position,
+                employee.IsActive
+            };
+
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                const string sql = "INSERT INTO EmployeeTb OUTPUT INSERTED.Id VALUES (@Fullname, @Birthdate, @Salary, @Position, @IsActive)";
+
+                var id = await sqlConnection.ExecuteScalarAsync<int>(sql, parameters);
+
+                return Ok(id);
+            }
         }
 
         // PUT api/<EmployeesController>/5
