@@ -34,7 +34,23 @@ namespace Dapper_example.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok();
+            var parameters = new
+            {
+                id
+            };
+
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                const string sql = "SELECT * FROM EmployeeTb WHERE Id = @Id";
+
+                var employee = await sqlConnection.QuerySingleOrDefaultAsync<EmployeeEntite>(sql, parameters);
+
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+                return Ok(employee);
+            }
         }
 
         // POST api/<EmployeesController>
