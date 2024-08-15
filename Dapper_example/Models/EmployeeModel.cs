@@ -3,7 +3,6 @@
     public class EmployeeModel
     {
         public string Fullname { get; set; }
-        public int Id { get; set; }
         public DateTime Birthdate { get; set; }
         public double Salary { get; set; }
         public string Position { get; set; }
