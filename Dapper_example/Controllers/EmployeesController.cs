@@ -1,5 +1,8 @@
-﻿using Dapper_example.Models;
+﻿using Dapper;
+using Dapper_example.Entites;
+using Dapper_example.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,16 +12,22 @@ namespace Dapper_example.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        public EmployeesController()
+        private readonly string _connectionString;
+        public EmployeesController(IConfiguration connectionString)
         {
-
+            _connectionString = connectionString.GetConnectionString("Dapper_example");
         }
 
         // GET: api/<EmployeesController>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                const string sql = "SELECT * FROM EmployeeTb WHERE IsActive = 1";
+                var employees = await sqlConnection.QueryAsync<EmployeeEntite>(sql);
+                return Ok(employees);
+            }
         }
 
         // GET api/<EmployeesController>/5
