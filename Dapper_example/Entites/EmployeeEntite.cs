@@ -11,10 +11,9 @@
         public string Position { get; set; }
         public bool IsActive { get; set; }
 
-        public EmployeeEntite(string fullname, int id, DateTime birthdate, double salary, string position)
+        public EmployeeEntite(string fullname, DateTime birthdate, double salary, string position)
         {
             Fullname = fullname;
-            Id = id;
             Birthdate = birthdate;
             Salary = salary;
             Position = position;
