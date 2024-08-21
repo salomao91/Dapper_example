@@ -106,6 +106,18 @@ namespace Dapper_example.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var parameters = new
+            {
+                id
+            };
+
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                const string sql = "UPDATE EmployeeTb SET IsActive = 0 WHERE Id = @id ";
+
+                await sqlConnection.ExecuteAsync(sql, parameters);
+            }
+
             return NoContent();
         }
     }
