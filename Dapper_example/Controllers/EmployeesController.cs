@@ -82,7 +82,24 @@ namespace Dapper_example.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EmployeeModel model) 
         {
-            return NoContent();
+            var parameters = new
+            {
+                id,
+                model.Fullname,
+                model.Birthdate,
+                model.Salary,
+                model.Position
+            };
+
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                const string sql = "UPDATE EmployeeTb SET Fullname = @Fullname, Birthdate = @Birthdate, Salary = @Salary, Position = @Position WHERE Id = @id";
+
+                await sqlConnection.ExecuteAsync(sql, parameters);
+
+                return NoContent();
+            }
+
         }
 
         // DELETE api/<EmployeesController>/5
